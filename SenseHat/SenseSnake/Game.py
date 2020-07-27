@@ -8,6 +8,8 @@ currDirection = ""
 prevDirection = ""
 #Global Access for Board
 board = Board()
+#Choose a value 0 > x <= 1 (lower values will make the snake faster)
+sleepTime = .5
 
 #Game Driver
 def main():
@@ -20,9 +22,9 @@ def main():
     while(True):
         newPos = ""
         if currDirection == "up":
-            if snakeBody[0][0] - 1 != snakeBody[1][0]:
-                newPos = (snakeBody[0][0] - 1, snakeBody[0][1])
-                if newPos[0] < 0:
+            if snakeBody[0] - 8 != snakeBody[1]:
+                newPos = snakeBody[0] - 8
+                if newPos < 0:
                     break
                 elif newPos in snakeBody:
                     break
@@ -32,9 +34,9 @@ def main():
                 continue
                 
         elif currDirection == "down":
-            if snakeBody[0][0] + 1 != snakeBody[1][0]:
-                newPos = (snakeBody[0][0] + 1, snakeBody[0][1])
-                if newPos[0] > 7:
+            if snakeBody[0] + 8 != snakeBody[1]:
+                newPos = snakeBody[0] + 8
+                if newPos > 63:
                     break
                 elif newPos in snakeBody:
                     break
@@ -44,9 +46,11 @@ def main():
                 continue
                 
         elif currDirection == "left":
-            if snakeBody[0][1] - 1 != snakeBody[1][1]:
-                newPos = (snakeBody[0][0], snakeBody[0][1] - 1)
-                if newPos[1] < 0:
+            if snakeBody[0] - 1 != snakeBody[1]:
+                newPos = snakeBody[0] - 1
+                if newPos < 0:
+                    break
+                elif newPos % board.board_dims == 7:
                     break
                 elif newPos in snakeBody:
                     break
@@ -57,9 +61,11 @@ def main():
             
             
         elif currDirection == "right":
-            if snakeBody[0][1] + 1 != snakeBody[1][1]:
-                newPos = (snakeBody[0][0], snakeBody[0][1] + 1)
-                if newPos[1] > 7:
+            if snakeBody[0] + 1 != snakeBody[1]:
+                newPos = snakeBody[0] + 1
+                if newPos > 63:
+                    break
+                elif newPos % board.board_dims == 0:
                     break
                 elif newPos in snakeBody:
                     break
@@ -69,7 +75,7 @@ def main():
                 continue
             
         board.drawSnake(board.snake)
-        time.sleep(.5)
+        time.sleep(sleepTime)
     listener.stop()
 
 def moveSnake(newPos, snakeBody):
@@ -87,13 +93,13 @@ def moveSnake(newPos, snakeBody):
     if newPos == board.foodLoc:
         snakeBody.append(prevCell)
         board.snake.body = snakeBody
-        board.board_pixels[board.convertCoordinatesToIndex(prevCell)] = board.g
-        board.foodLoc = board.convertIndexToCoordinates(board.placeFood(board.snake))
+        board.board_pixels[prevCell] = board.g
+        board.foodLoc = board.placeFood(board.snake)
         board.refreshBoard()
 
     else:
         board.snake.body = snakeBody
-        board.board_pixels[board.convertCoordinatesToIndex(prevCell)] = board.b
+        board.board_pixels[prevCell] = board.b
 
 
 #Keyboard Listener Methods        

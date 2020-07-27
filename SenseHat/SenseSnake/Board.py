@@ -11,6 +11,7 @@ class Board:
     b = (0, 0, 0)
     
     board_dims = 8
+    snake_size = 3
     
     board_pixels = [
         b, b, b, b, b, b, b , b,
@@ -26,13 +27,13 @@ class Board:
     def __init__(self):
         self.sense.clear()
         self.sense.set_pixels(self.board_pixels)
-        self.snake = Snake(self.convertIndexToCoordinates(random.randint(0, 63)))
+        self.snake = Snake(random.randint(0, 63), self.snake_size, self.board_dims)
         self.drawSnake(self.snake)
-        self.foodLoc = self.convertIndexToCoordinates(self.placeFood(self.snake))
+        self.foodLoc = self.placeFood(self.snake)
     
     def drawSnake(self, snake):
         for i in range(len(snake.body)):
-            board_Index = self.convertCoordinatesToIndex(snake.body[i])
+            board_Index = snake.body[i]
             if i == 0:
                 self.board_pixels[board_Index] = self.bl
             else:
@@ -50,7 +51,7 @@ class Board:
         
     def randExcludingBody(self, body):
         randInt = random.randint(0,63)
-        return self.randExcludingBody(body) if self.convertIndexToCoordinates(randInt) in body else randInt
+        return self.randExcludingBody(body) if randInt in body else randInt
         
         
     def convertIndexToCoordinates(self, index):
